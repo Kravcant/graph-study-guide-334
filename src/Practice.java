@@ -2,8 +2,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 public class Practice {
@@ -120,15 +122,8 @@ public class Practice {
     if (current == target) return true;
     if (seen.contains(current)) return false;
     seen.add(current);
-    boolean isValid = false;
-    for (Vertex<T> neighbor : current.neighbors) {
-      boolean currentValid = twoWay(neighbor, target, seen);
-      if (currentValid) {
-        isValid = currentValid;
-        break;
-      };
-    }
-    return isValid;
+    for (Vertex<T> neighbor : current.neighbors) if (twoWay(neighbor, target, seen)) return true;
+    return false;
   }
 
   /**
@@ -144,6 +139,15 @@ public class Practice {
    * @return whether there exists a valid positive path from starting to ending
    */
   public static boolean positivePathExists(Map<Integer, Set<Integer>> graph, int starting, int ending) {
+    if (starting < 0 || ending < 0) return false;
+    return dfs(graph, starting, ending, new HashSet<>());
+  }
+
+  private static boolean dfs(Map<Integer, Set<Integer>> graph, int current, int target, Set<Integer> seen) {
+    if (current == target) return true;
+    if (seen.contains(current)) return false;
+    seen.add(current);
+    for (int neighbor : graph.get(current)) if (neighbor >= 0 && dfs(graph, neighbor, target, seen)) return true;
     return false;
   }
 
