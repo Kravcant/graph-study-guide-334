@@ -112,7 +112,23 @@ public class Practice {
    * @return true if there is a two-way connection between v1 and v2, false otherwise
    */
   public static <T> boolean twoWay(Vertex<T> v1, Vertex<T> v2) {
-    return false;
+    if (v1 == null || v2 == null) return false;
+    return twoWay(v1, v2, new HashSet<>()) && twoWay(v2, v1, new HashSet<>());
+  }
+
+  private static <T> boolean twoWay(Vertex<T> current, Vertex<T> target, Set<Vertex<T>> seen) {
+    if (current == target) return true;
+    if (seen.contains(current)) return false;
+    seen.add(current);
+    boolean isValid = false;
+    for (Vertex<T> neighbor : current.neighbors) {
+      boolean currentValid = twoWay(neighbor, target, seen);
+      if (currentValid) {
+        isValid = currentValid;
+        break;
+      };
+    }
+    return isValid;
   }
 
   /**
